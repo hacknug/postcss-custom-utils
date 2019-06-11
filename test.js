@@ -147,20 +147,24 @@ describe('writeCustom exports different formats', () => {
 	});
 
 	const testSources = Object.entries({
-		css: fs.readFileSync('test/export.css', 'utf8'),
-		js: fs.readFileSync('test/export.js', 'utf8'),
-		json: fs.readFileSync('test/export.json', 'utf8'),
-		mjs: fs.readFileSync('test/export.mjs', 'utf8')
+		css: '',
+		js: '',
+		json: '',
+		mjs: '',
 	});
 
-	test.each(testSources)('%s', (extension, testExpect) => {
+	test.each(testSources)('%s', (extension) => {
 		const path = `test/export.${extension}`;
+
+		fs.existsSync(path) && fs.unlinkSync(path);
+
+		const testResult = fs.existsSync(path);
 
 		utils.writeCustom.sync(testContent, path);
 
-		const fileContent = fs.readFileSync(path, 'utf8');
+		const testExpect = fs.existsSync(path);
 
-		return expect(fileContent).toBe(testExpect);
+		return expect(testResult).not.toBe(testExpect);
 	});
 });
 
